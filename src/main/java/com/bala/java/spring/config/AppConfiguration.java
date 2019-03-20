@@ -1,5 +1,7 @@
 package com.bala.java.spring.config;
 
+import com.bala.java.spring.consumer.SimpleKafkaConsumer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -9,6 +11,18 @@ import java.util.Properties;
 
 @Configuration
 public class AppConfiguration {
+
+    @Value("${kafka.topic.thetechcheck}")
+    private String theTechCheckTopicName;
+
+    @Value("${kafka.bootstrap.servers}")
+    private String kafkaBootstrapServers;
+
+    @Value("${zookeeper.groupId}")
+    private String zookeeperGroupId;
+
+    @Value("${zookeeper.host}")
+    String zookeeperHost;
 
     @Bean
     public JavaMailSender getJavaMailSender() {
@@ -27,4 +41,26 @@ public class AppConfiguration {
 
         return mailSender;
     }
+
+    @Bean
+    public Properties kafkaProperties(){
+        Properties consumerProperties = new Properties();
+        consumerProperties.put("bootstrap.servers", kafkaBootstrapServers);
+        consumerProperties.put("group.id", zookeeperGroupId);
+        consumerProperties.put("zookeeper.session.timeout.ms", "6000");
+        consumerProperties.put("zookeeper.sync.time.ms","2000");
+        consumerProperties.put("auto.commit.enable", "false");
+        consumerProperties.put("auto.commit.interval.ms", "1000");
+        consumerProperties.put("consumer.timeout.ms", "-1");
+        consumerProperties.put("max.poll.records", "1");
+        consumerProperties.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        consumerProperties.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        return consumerProperties;
+    }
+
+    @Bean
+    public SimpleKafkaConsumer getSimpleKafkaConsumer(){
+        return new SimpleKafkaConsumer(theTechCheckTopicName, kafkaProperties());
+    }
+
 }
