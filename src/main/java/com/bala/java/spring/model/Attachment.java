@@ -22,8 +22,6 @@ public class Attachment implements Serializable {
         this.contentType = contentType;
     }
 
-    ;
-
     public String getFileName() {
         return fileName;
     }

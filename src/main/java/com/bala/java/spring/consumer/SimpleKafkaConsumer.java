@@ -8,9 +8,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
-
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,32 +40,31 @@ public class SimpleKafkaConsumer {
     public void runSingleWorker() {
 
 
+        ConsumerRecords<String, String> records = kafkaConsumer.poll(100);
 
-            ConsumerRecords<String, String> records = kafkaConsumer.poll(100);
-
-            for (ConsumerRecord<String, String> record : records) {
+        for (ConsumerRecord<String, String> record : records) {
                 /*
                 Getting the message as a string from the record object.
                  */
-                String message = record.value();
+            String message = record.value();
 
                 /*
                 Logging the received message to the console.
                  */
-                logger.info("Received message: " + message);
+            logger.info("Received message: " + message);
 
 
-                    Mail mail = null;
-                    try {
-                        mail = (Mail) MailUtils.fromString(message);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        logger.error(e.getMessage());
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                        logger.error(e.getMessage());
-                    }
-                    emailService.sendMessageWithAttachment(mail);
+            Mail mail = null;
+            try {
+                mail = (Mail) MailUtils.fromString(message);
+            } catch (IOException e) {
+                e.printStackTrace();
+                logger.error(e.getMessage());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                logger.error(e.getMessage());
+            }
+            emailService.sendMessageWithAttachment(mail);
 
                 /*
                 Once we finish processing a Kafka message, we have to commit the offset so that
@@ -77,17 +73,17 @@ public class SimpleKafkaConsumer {
                 instead, we're going to manually commit the offsets.
                 The code for this is below. It's pretty much self explanatory.
                  */
-                {
-                    Map<TopicPartition, OffsetAndMetadata> commitMessage = new HashMap<>();
+            {
+                Map<TopicPartition, OffsetAndMetadata> commitMessage = new HashMap<>();
 
-                    commitMessage.put(new TopicPartition(record.topic(), record.partition()),
-                            new OffsetAndMetadata(record.offset() + 1));
+                commitMessage.put(new TopicPartition(record.topic(), record.partition()),
+                        new OffsetAndMetadata(record.offset() + 1));
 
-                    kafkaConsumer.commitSync(commitMessage);
+                kafkaConsumer.commitSync(commitMessage);
 
-                    logger.info("Offset committed to Kafka.");
-                }
+                logger.info("Offset committed to Kafka.");
             }
+        }
 
     }
 }

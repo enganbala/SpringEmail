@@ -7,13 +7,13 @@ import java.util.ArrayList;
 
 public interface EmailService {
 
-    public void sendSimpleMessage(String to, String subject, String text);
+    void sendSimpleMessage(String to, String subject, String text);
 
-    public void sendMessageWithAttachment(String to, String subject, String text, String pathToAttachment);
+    void sendMessageWithAttachment(String to, String subject, String text, String pathToAttachment);
 
-    public void sendMessageWithAttachment(String to, String subject, String text, String fileName, byte[] attachment);
+    void sendMessageWithAttachment(String to, String subject, String text, String fileName, byte[] attachment);
 
-    public void sendMessageWithAttachment(String to, String subject, String text, ArrayList<Attachment> attachment);
+    void sendMessageWithAttachment(String to, String subject, String text, ArrayList<Attachment> attachment);
 
-    public void sendMessageWithAttachment(Mail mail);
+    void sendMessageWithAttachment(Mail mail);
 }
