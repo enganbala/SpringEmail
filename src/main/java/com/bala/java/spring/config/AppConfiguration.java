@@ -12,6 +12,7 @@ import java.util.Properties;
 @Configuration
 public class AppConfiguration {
 
+<<<<<<< HEAD
     @Value("${zookeeper.host}")
     String zookeeperHost;
     @Value("${kafka.topic.thetechcheck}")
@@ -21,6 +22,20 @@ public class AppConfiguration {
     @Value("${zookeeper.groupId}")
     private String zookeeperGroupId;
 
+=======
+    @Value("${kafka.topic.thetechcheck}")
+    private String theTechCheckTopicName;
+
+    @Value("${kafka.bootstrap.servers}")
+    private String kafkaBootstrapServers;
+
+    @Value("${zookeeper.groupId}")
+    private String zookeeperGroupId;
+
+    @Value("${zookeeper.host}")
+    String zookeeperHost;
+
+>>>>>>> 5fee6cd... implemented Kafka consumer
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
@@ -40,12 +55,20 @@ public class AppConfiguration {
     }
 
     @Bean
+<<<<<<< HEAD
     public Properties kafkaConsumerProperties() {
+=======
+    public Properties kafkaProperties(){
+>>>>>>> 5fee6cd... implemented Kafka consumer
         Properties consumerProperties = new Properties();
         consumerProperties.put("bootstrap.servers", kafkaBootstrapServers);
         consumerProperties.put("group.id", zookeeperGroupId);
         consumerProperties.put("zookeeper.session.timeout.ms", "6000");
+<<<<<<< HEAD
         consumerProperties.put("zookeeper.sync.time.ms", "2000");
+=======
+        consumerProperties.put("zookeeper.sync.time.ms","2000");
+>>>>>>> 5fee6cd... implemented Kafka consumer
         consumerProperties.put("auto.commit.enable", "false");
         consumerProperties.put("auto.commit.interval.ms", "1000");
         consumerProperties.put("consumer.timeout.ms", "-1");
@@ -56,6 +79,7 @@ public class AppConfiguration {
     }
 
     @Bean
+<<<<<<< HEAD
     public Properties kafkaProducerProperties() {
         Properties producerProperties = new Properties();
         producerProperties.put("bootstrap.servers", kafkaBootstrapServers);
@@ -72,6 +96,10 @@ public class AppConfiguration {
     @Bean
     public SimpleKafkaConsumer getSimpleKafkaConsumer() {
         return new SimpleKafkaConsumer(theTechCheckTopicName, kafkaConsumerProperties());
+=======
+    public SimpleKafkaConsumer getSimpleKafkaConsumer(){
+        return new SimpleKafkaConsumer(theTechCheckTopicName, kafkaProperties());
+>>>>>>> 5fee6cd... implemented Kafka consumer
     }
 
 }
